@@ -6,7 +6,7 @@ namespace Remind\HeadlessSolr\ViewHelpers;
 
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use Closure;
-use Remind\Typo3Headless\ViewHelpers\PaginationViewHelper;
+use Remind\Headless\ViewHelpers\PaginationViewHelper;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
