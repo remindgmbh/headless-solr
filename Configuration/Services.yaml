@@ -1,0 +1,11 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Remind\HeadlessSolr\:
+    resource: '../Classes/*'
+
+  ApacheSolrForTypo3\Solr\Controller\SearchController: '@Remind\HeadlessSolr\Controller\SearchController'
+
