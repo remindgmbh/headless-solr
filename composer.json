@@ -1,6 +1,6 @@
 {
     "name": "remind/headless-solr",
-    "description": "Headless integration for solr extension",
+    "description": "REMIND - Headless Solr",
     "type": "typo3-cms-extension",
     "keywords": ["TYPO3", "CMS", "REMIND", "solr", "headless"],
     "license": ["GPL-3.0-or-later"],
