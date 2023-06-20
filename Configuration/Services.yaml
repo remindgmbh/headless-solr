@@ -7,5 +7,6 @@ services:
   Remind\HeadlessSolr\:
     resource: '../Classes/*'
 
-  ApacheSolrForTypo3\Solr\Controller\SearchController: '@Remind\HeadlessSolr\Controller\SearchController'
-
+  ApacheSolrForTypo3\Solr\Controller\SearchController:
+    alias: Remind\HeadlessSolr\Controller\SearchController
+    public: true
