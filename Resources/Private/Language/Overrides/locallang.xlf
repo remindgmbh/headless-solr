@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" original="EXT:rmnd_headless_solr/Resources/Private/Language/Overrides/locallang.xlf" product-name="rmnd_headless_solr">
+        <header/>
+        <body>
+            <trans-unit id="tt_content.list_type_pi_results">
+                <source>Search: Result</source>
+            </trans-unit>
+            <trans-unit id="tt_content.list_type_pi_search">
+                <source>Search: Form</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

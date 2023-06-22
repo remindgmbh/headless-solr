@@ -11,4 +11,11 @@ defined('TYPO3') || die('Access denied.');
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][SearchController::class] = [
         'className' => HeadlessSearchController::class,
     ];
+
+    $GLOBALS
+        ['TYPO3_CONF_VARS']
+        ['SYS']
+        ['locallangXMLOverride']
+        ['EXT:solr/Resources/Private/Language/locallang.xlf']
+        [] = 'EXT:rmnd_headless_solr/Resources/Private/Language/Overrides/locallang.xlf';
 })();

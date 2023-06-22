@@ -23,9 +23,46 @@ class SearchController extends BaseSearchController
     {
         parent::formAction();
 
-        return $this->jsonResponse(json_encode([
-            'form' => $this->getForm(),
-        ]));
+        $config = Util::getSolrConfiguration();
+        $targetPageUid = $config->getSearchTargetPage();
+        $getParameter = $config->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
+
+        $arguments = $this->request->getArguments();
+        $query = $arguments[$getParameter];
+
+        $pluginNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+
+        $searchUrl = $this->uriBuilder
+            ->reset()
+            ->setTargetPageUid($targetPageUid)
+            ->build();
+
+        $searchUrlWithQueryParam = $this->uriBuilder
+            ->reset()
+            ->setArguments([$pluginNamespace . '[' . $getParameter . ']' => '*'])
+            ->build();
+
+        $queryParam = str_replace('=*', '', str_replace($searchUrl . '?', '', urldecode($searchUrlWithQueryParam)));
+
+        $suggestUrl = $this->uriBuilder
+            ->reset()
+            ->setTargetPageUid($targetPageUid)
+            ->setTargetPageType((int)$this->settings['suggest']['typeNum'])
+            ->build();
+
+        $result =  [
+            'query' => $query,
+            'search' => [
+                'url' => $searchUrl,
+                'queryParam' => $queryParam,
+            ],
+            'suggest' => [
+                'url' => $suggestUrl,
+                'queryParam' => $pluginNamespace . '[queryString]',
+            ],
+        ];
+
+        return $this->jsonResponse(json_encode($result));
     }
 
     public function resultsAction(): ResponseInterface
@@ -73,47 +110,6 @@ class SearchController extends BaseSearchController
             'pagination' => $paginationResult,
         ];
 
-        return $this->jsonResponse(json_encode([
-            'form' => $this->getForm(),
-            'results' => $result,
-        ]));
-    }
-
-    private function getForm(): array
-    {
-        $pluginNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
-
-        $config = Util::getSolrConfiguration();
-        $targetPageUid = $config->getSearchTargetPage();
-        $getParameter = $config->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
-
-        $searchUrl = $this->uriBuilder
-            ->reset()
-            ->setTargetPageUid($targetPageUid)
-            ->build();
-
-        $searchUrlWithQueryParam = $this->uriBuilder
-            ->reset()
-            ->setArguments([$pluginNamespace . '[' . $getParameter . ']' => '*'])
-            ->build();
-
-        $queryParam = str_replace('=*', '', str_replace($searchUrl . '?', '', urldecode($searchUrlWithQueryParam)));
-
-        $suggestUrl = $this->uriBuilder
-            ->reset()
-            ->setTargetPageUid($targetPageUid)
-            ->setTargetPageType((int)$this->settings['suggest']['typeNum'])
-            ->build();
-
-        return [
-            'search' => [
-                'url' => $searchUrl,
-                'queryParam' => $queryParam,
-            ],
-            'suggest' => [
-                'url' => $suggestUrl,
-                'queryParam' => $pluginNamespace . '[queryString]',
-            ],
-        ];
+        return $this->jsonResponse(json_encode($result));
     }
 }

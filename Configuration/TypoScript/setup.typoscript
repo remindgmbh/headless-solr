@@ -17,7 +17,6 @@ tt_content.list {
                         switchableControllerActions {
                             Search {
                                 1 = results
-                                2 = form
                             }
                         }
                     }
