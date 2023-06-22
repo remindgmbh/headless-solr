@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Remind\HeadlessSolr\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SearchController as BaseSearchController;
+use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use Psr\Http\Message\ResponseInterface;
 use Remind\Headless\Service\JsonService;
 
@@ -50,7 +52,7 @@ class SearchController extends BaseSearchController
             ->setTargetPageType((int)$this->settings['suggest']['typeNum'])
             ->build();
 
-        $result =  [
+        $result = [
             'query' => $query,
             'search' => [
                 'url' => $searchUrl,
@@ -70,10 +72,11 @@ class SearchController extends BaseSearchController
         parent::resultsAction();
 
         $renderingContext = $this->view->getRenderingContext();
+        $viewHelperInvoker = $renderingContext->getViewHelperInvoker();
 
         $variables = $renderingContext->getVariableProvider()->getAll();
-        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet $newsQueryResult */
-        $resultSet = $variables['resultSet'];
+        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet $searchResultSet */
+        $searchResultSet = $variables['resultSet'];
         /** @var \ApacheSolrForTypo3\Solr\Pagination\ResultsPagination $pagination */
         $pagination = $variables['pagination'];
         /** @var int $currentPage */
@@ -81,33 +84,66 @@ class SearchController extends BaseSearchController
 
         $documents = [];
 
-        $searchResults = $resultSet->getSearchResults();
+        $searchResults = $searchResultSet->getSearchResults();
 
         foreach ($searchResults as $searchResult) {
             /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult $searchResult */
             $documents[] = [
                 'title' => $searchResult->getTitle(),
-                'content' => $renderingContext->getViewHelperInvoker()->invoke(
+                'content' => $viewHelperInvoker->invoke(
                     HighlightResultViewHelper::class,
-                    ['resultSet' => $resultSet, 'document' => $searchResult, 'fieldName' => 'content'],
+                    ['resultSet' => $searchResultSet, 'document' => $searchResult, 'fieldName' => 'content'],
                     $renderingContext
                 ),
-                'url' => $searchResult->getUrl(),
+                'link' => $searchResult->getUrl(),
             ];
         }
 
         $paginationResult = $this->jsonService->serializePagination($pagination, 'page', $currentPage);
 
-        $count = $resultSet->getAllResultCount();
+        $count = $searchResultSet->getAllResultCount();
 
-        $usedQuery = $resultSet->getUsedQuery();
+        $usedQuery = $searchResultSet->getUsedQuery();
         $query = $usedQuery ? $usedQuery->getOption('query') : null;
 
+        $facets = [];
+
+        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\AbstractFacet $facet */
+        foreach ($searchResultSet->getFacets()->getAvailable() as $facet) {
+            $options = [];
+            if ($facet instanceof AbstractOptionsFacet) {
+                /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionFacetItem $option */
+                foreach ($facet->getOptions() as $option) {
+                    $link = $viewHelperInvoker->invoke(
+                        SetFacetItemViewHelper::class,
+                        ['facet' => $facet, 'facetItem' => $option],
+                        $renderingContext,
+                    );
+
+                    $options[] = [
+                        'value' => $option->getValue(),
+                        'label' => $option->getLabel(),
+                        'link' => $link,
+                        'count' => $option->getDocumentCount(),
+                        'selected' => $option->getSelected(),
+                    ];
+                }
+            }
+
+            $facets[] = [
+                'field' => $facet->getField(),
+                'name' => $facet->getName(),
+                'label' => $facet->getLabel(),
+                'options' => $options,
+            ];
+        }
+
         $result = [
-            'documents' => $documents,
-            'count' => $count,
             'query' => $query,
+            'count' => $count,
             'pagination' => $paginationResult,
+            'facets' => $facets,
+            'documents' => $documents,
         ];
 
         return $this->jsonResponse(json_encode($result));

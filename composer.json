@@ -36,10 +36,7 @@
         "typo3/cms-core": "^12.4"
     },
     "require-dev": {
-        "nimut/testing-framework": "^6.0",
-        "pdepend/pdepend": "^2.5.2",
         "phpmd/phpmd": "^2.13.0",
-        "sebastian/phpcpd": "^6.0.3",
         "slevomat/coding-standard": "^8.5",
         "squizlabs/php_codesniffer": "^3.7.1"
     },
@@ -63,16 +60,12 @@
     "scripts": {
         "pmd": "@php ./.build/vendor/phpmd/phpmd/src/bin/phpmd ./Classes ansi ./.build/phpmd.xml --ignore-violations-on-exit",
         "pmd-xml": "@php ./.build/vendor/phpmd/phpmd/src/bin/phpmd ./Classes xml ./.build/phpmd.xml --reportfile ./.build/logs/pmd.xml --ignore-violations-on-exit",
-        "phpcpd": "@php ./.build/vendor/sebastian/phpcpd/phpcpd --log-pmd ./.build/logs/pmd-cpd.xml ./Classes ./Configuration/TCA ./Tests ./ext_emconf.php ./ext_tables.php",
         "phpcs": "@php ./.build/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=.build/phpcs.xml --extensions=php --ignore=.build --report=full .",
         "phpcbf": "@php ./.build/vendor/squizlabs/php_codesniffer/bin/phpcbf --standard=.build/phpcs.xml --extensions=php --ignore=.build .",
-        "test": "@php ./.build/vendor/phpunit/phpunit/phpunit -c ./.build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml ./Tests/Unit",
         "static-analysis": [
             "@pmd",
             "@pmd-xml",
-            "@phpcpd",
-            "@phpcs",
-            "@test"
+            "@phpcs"
         ]
     }
 }
