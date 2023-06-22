@@ -8,6 +8,7 @@ use ApacheSolrForTypo3\Solr\Controller\SearchController as BaseSearchController;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
+use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use Psr\Http\Message\ResponseInterface;
 use Remind\Headless\Service\JsonService;
@@ -125,15 +126,21 @@ class SearchController extends BaseSearchController
                         'label' => $option->getLabel(),
                         'link' => $link,
                         'count' => $option->getDocumentCount(),
-                        'selected' => $option->getSelected(),
+                        'active' => $option->getSelected(),
                     ];
                 }
             }
+
+            $allOptionsLink = $viewHelperInvoker->invoke(RemoveAllFacetsViewHelper::class, [], $renderingContext);
 
             $facets[] = [
                 'field' => $facet->getField(),
                 'name' => $facet->getName(),
                 'label' => $facet->getLabel(),
+                'allOptions' => [
+                    'active' => !$facet->getIsUsed(),
+                    'link' => $allOptionsLink,
+                ],
                 'options' => $options,
             ];
         }
