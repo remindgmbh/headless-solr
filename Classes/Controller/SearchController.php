@@ -132,14 +132,18 @@ class SearchController extends BaseSearchController
             }
 
             $allOptionsLink = $viewHelperInvoker->invoke(RemoveAllFacetsViewHelper::class, [], $renderingContext);
+            $allOptionsCount = array_reduce($options, function (int $result, array $option) {
+                return $result + $option['count'];
+            }, 0);
 
             $facets[] = [
                 'field' => $facet->getField(),
                 'name' => $facet->getName(),
                 'label' => $facet->getLabel(),
                 'allOptions' => [
-                    'active' => !$facet->getIsUsed(),
                     'link' => $allOptionsLink,
+                    'count' => $allOptionsCount,
+                    'active' => !$facet->getIsUsed(),
                 ],
                 'options' => $options,
             ];
