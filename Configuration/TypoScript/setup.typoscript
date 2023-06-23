@@ -1,5 +1,21 @@
 @import 'EXT:solr/Configuration/TypoScript/Solr/setup.typoscript'
 
+lib.search = USER
+lib.search {
+    userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+    vendorName = ApacheSolrForTypo3
+    extensionName = Solr
+    settings < plugin.tx_solr.settings
+    persistence < plugin.tx_solr.persistence
+    view < plugin.tx_solr.view
+    pluginName = pi_search
+    switchableControllerActions {
+        Search {
+            1 = form
+        }
+    }
+}
+
 tt_content.list {
     fields {
         content {
@@ -21,26 +37,27 @@ tt_content.list {
                         }
                     }
 
-                    solr_pi_search = USER
-                    solr_pi_search {
-                        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
-                        vendorName = ApacheSolrForTypo3
-                        extensionName = Solr
-                        settings < plugin.tx_solr.settings
-                        persistence < plugin.tx_solr.persistence
-                        view < plugin.tx_solr.view
-                        pluginName = pi_search
-                        switchableControllerActions {
-                            Search {
-                                1 = form
-                            }
-                        }
-                    }
+                    solr_pi_search < lib.search
                 }
             }
 
         }
     }
+}
+
+tx_solr_search = PAGE
+tx_solr_search {
+    typeNum = {$plugin.tx_solr.search.typeNum}
+    config {
+        disableAllHeaderCode = 1
+        xhtml_cleaning = 0
+        admPanel = 0
+        additionalHeaders.10.header = Content-type: application/json
+        no_cache = 0
+        debug = 0
+    }
+
+    10 < lib.search
 }
 
 tx_solr_suggest = PAGE
