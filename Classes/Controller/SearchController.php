@@ -31,7 +31,6 @@ class SearchController extends BaseSearchController
         $getParameter = $config->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
 
         $arguments = $this->request->getArguments();
-        $query = $arguments[$getParameter];
 
         $pluginNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
 
@@ -54,7 +53,6 @@ class SearchController extends BaseSearchController
             ->build();
 
         $result = [
-            'query' => $query,
             'search' => [
                 'url' => $searchUrl,
                 'queryParam' => $queryParam,
