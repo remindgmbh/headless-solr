@@ -158,7 +158,7 @@ plugin.tx_solr {
                         }
                         20 = CONTENT
                         20 {
-                            table = rmnd_content_items
+                            table = tx_headless_item
                             select {
                                 pidInList.field = uid
                             }
