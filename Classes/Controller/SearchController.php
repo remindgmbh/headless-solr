@@ -41,6 +41,7 @@ class SearchController extends BaseSearchController
 
         $searchUrlWithQueryParam = $this->uriBuilder
             ->reset()
+            ->setTargetPageUid($targetPageUid)
             ->setArguments([$pluginNamespace . '[' . $getParameter . ']' => '*'])
             ->build();
 
