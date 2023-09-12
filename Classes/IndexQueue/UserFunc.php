@@ -6,6 +6,7 @@ namespace Remind\HeadlessSolr\IndexQueue;
 
 use TYPO3\CMS\Core\Service\FlexFormService;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
+use TYPO3\CMS\Core\Utility\Exception\MissingArrayPathException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
@@ -31,8 +32,12 @@ class UserFunc
             $result = [];
 
             foreach ($fields as $field) {
-                $value = ArrayUtility::getValueByPath($flexformArray, $field, '.');
-                $result[] = $value;
+                try {
+                    $value = ArrayUtility::getValueByPath($flexformArray, $field, '.');
+                    $result[] = $value;
+                } catch (MissingArrayPathException $e) {
+                    // do nothing if array path does not exists
+                }
             }
 
             return implode(' ', $result);
