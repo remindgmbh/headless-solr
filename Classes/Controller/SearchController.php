@@ -10,17 +10,32 @@ use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
+use FriendsOfTYPO3\Headless\Utility\FileUtility;
 use Psr\Http\Message\ResponseInterface;
 use Remind\Headless\Service\JsonService;
 use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Service\ImageService;
 
 class SearchController extends BaseSearchController
 {
+    private ?FileUtility $fileUtility = null;
     private ?JsonService $jsonService = null;
+    private ?ImageService $imageService = null;
+
+    public function injectFileUtility(FileUtility $fileUtility): void
+    {
+        $this->fileUtility = $fileUtility;
+    }
 
     public function injectJsonService(JsonService $jsonService): void
     {
         $this->jsonService = $jsonService;
+    }
+
+    public function injectImageService(ImageService $imageService): void
+    {
+        $this->imageService = $imageService;
     }
 
     public function formAction(): ResponseInterface
@@ -89,6 +104,12 @@ class SearchController extends BaseSearchController
 
         /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult $searchResult */
         foreach ($searchResults as $searchResult) {
+            $imageUids = $searchResult->__get('image_intM') ?? [];
+            $images = array_map(function (int $uid) {
+                $image = $this->imageService->getImage(strval($uid), null, true);
+                return $this->fileUtility->processFile($image);
+            }, $imageUids);
+
             $document = [
                 'title' => $searchResult->getTitle(),
                 'content' => $viewHelperInvoker->invoke(
@@ -96,7 +117,7 @@ class SearchController extends BaseSearchController
                     ['resultSet' => $searchResultSet, 'document' => $searchResult, 'fieldName' => 'content'],
                     $renderingContext
                 ),
-                'images' => $searchResult->__get('image_intM') ?? [],
+                'images' => $images,
                 'link' => $searchResult->getUrl(),
             ];
 
