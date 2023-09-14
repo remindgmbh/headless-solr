@@ -95,6 +95,7 @@ class SearchController extends BaseSearchController
                     ['resultSet' => $searchResultSet, 'document' => $searchResult, 'fieldName' => 'content'],
                     $renderingContext
                 ),
+                'images' => $searchResult->__get('image_intM') ?? [],
                 'link' => $searchResult->getUrl(),
             ];
         }
