@@ -12,6 +12,7 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use Psr\Http\Message\ResponseInterface;
 use Remind\Headless\Service\JsonService;
+use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
 
 class SearchController extends BaseSearchController
 {
@@ -86,9 +87,9 @@ class SearchController extends BaseSearchController
 
         $searchResults = $searchResultSet->getSearchResults();
 
+        /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult $searchResult */
         foreach ($searchResults as $searchResult) {
-            /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult $searchResult */
-            $documents[] = [
+            $document = [
                 'title' => $searchResult->getTitle(),
                 'content' => $viewHelperInvoker->invoke(
                     HighlightResultViewHelper::class,
@@ -98,6 +99,11 @@ class SearchController extends BaseSearchController
                 'images' => $searchResult->__get('image_intM') ?? [],
                 'link' => $searchResult->getUrl(),
             ];
+
+            /** @var ModifySearchDocumentEvent $event */
+            $event = $this->eventDispatcher->dispatch(new ModifySearchDocumentEvent($document, $searchResult));
+
+            $documents[] = $event->getDocument();
         }
 
         $paginationResult = $this->jsonService->serializePagination($pagination, 'page', $currentPage);
