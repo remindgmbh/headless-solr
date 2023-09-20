@@ -104,11 +104,12 @@ class SearchController extends BaseSearchController
 
         /** @var \ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult $searchResult */
         foreach ($searchResults as $searchResult) {
-            $imageUids = $searchResult->__get('image_intM') ?? [];
-            $images = array_map(function (int $uid) {
-                $image = $this->imageService->getImage(strval($uid), null, true);
-                return $this->fileUtility->processFile($image);
-            }, $imageUids);
+            $imageJson = null;
+            $imageUid = $searchResult->__get('image_intS') ?? null;
+            if ($imageUid) {
+                $imageObj = $this->imageService->getImage(strval($imageUid), null, true);
+                $imageJson = $this->fileUtility->processFile($imageObj);
+            }
 
             $document = [
                 'title' => $searchResult->getTitle(),
@@ -117,7 +118,7 @@ class SearchController extends BaseSearchController
                     ['resultSet' => $searchResultSet, 'document' => $searchResult, 'fieldName' => 'content'],
                     $renderingContext
                 ),
-                'images' => $images,
+                'image' => $imageJson,
                 'link' => $searchResult->getUrl(),
             ];
 

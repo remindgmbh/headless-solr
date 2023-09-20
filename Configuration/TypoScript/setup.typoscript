@@ -189,25 +189,20 @@ plugin.tx_solr {
                     }
                 }
 
-                image_intM = SOLR_MULTIVALUE
-                image_intM {
-                    stdWrap {
-                        cObject = CONTENT
-                        cObject {
-                            table = sys_file_reference
-                            select {
-                                pidInList.field = uid
-                                selectFields = sys_file_reference.*
-                                join = sys_file ON sys_file.uid = sys_file_reference.uid_local
-                                where = sys_file_reference.hidden = 0 AND sys_file_reference.deleted = 0 AND sys_file.missing = 0 AND sys_file_reference.tablenames = 'pages' AND sys_file_reference.fieldname = 'og_image'
-                                orderBy = sys_file_reference.tstamp DESC
-                            }
-                            renderObj = TEXT
-                            renderObj {
-                                value.field = uid
-                                stdWrap.wrap = |,
-                            }
-                        }
+                image_intS = CONTENT
+                image_intS {
+                    table = sys_file_reference
+                    select {
+                        pidInList.field = uid
+                        selectFields = sys_file_reference.uid
+                        join = sys_file ON sys_file.uid = sys_file_reference.uid_local
+                        where = sys_file_reference.hidden = 0 AND sys_file_reference.deleted = 0 AND sys_file.missing = 0 AND sys_file_reference.tablenames = 'pages' AND sys_file_reference.fieldname = 'tx_headless_solr_image'
+                        orderBy = sys_file_reference.tstamp DESC
+                        max = 1
+                    }
+                    renderObj = TEXT
+                    renderObj {
+                        value.field = uid
                     }
                 }
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" datatype="plaintext" product-name="headless_solr">
+        <header/>
+        <body>
+            <trans-unit id="pages.tx_headless_solr_image">
+                <target>Suchergebnis Bild</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
