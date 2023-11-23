@@ -91,6 +91,7 @@ plugin.tx_solr {
                 highlightFields = content
             }
         }
+        spellchecking = 1
     }
 
     settings {
