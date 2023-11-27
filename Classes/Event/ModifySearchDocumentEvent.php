@@ -6,7 +6,8 @@ namespace Remind\HeadlessSolr\Event;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 
-class ModifySearchDocumentEvent {
+class ModifySearchDocumentEvent
+{
     public function __construct(
         private array $document,
         private readonly SearchResult $searchResult,
