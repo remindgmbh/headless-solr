@@ -70,7 +70,7 @@
         }
     },
     "scripts": {
-        "phpcs": "@php ./.build/vendor/squizlabs/php_codesniffer/bin/phpcs --standard=.build/phpcs.xml --extensions=php --ignore=.build --report=full -n .",
-        "phpcbf": "@php ./.build/vendor/squizlabs/php_codesniffer/bin/phpcbf --standard=.build/phpcs.xml --extensions=php --ignore=.build ."
+        "phpcs": "@php ./.build/bin/phpcs --standard=.build/phpcs.xml --extensions=php --ignore=.build --report=full -n .",
+        "phpcbf": "@php ./.build/bin/phpcbf --standard=.build/phpcs.xml --extensions=php --ignore=.build ."
     }
 }
