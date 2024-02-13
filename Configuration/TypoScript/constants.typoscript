@@ -1,9 +1,6 @@
 @import 'EXT:solr/Configuration/TypoScript/Solr/constants.typoscript'
 
 plugin.tx_solr {
-    search {
-        typeNum = 7385
-    }
     suggest {
         typeNum = 7384
     }

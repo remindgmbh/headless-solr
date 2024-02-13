@@ -45,32 +45,23 @@ tt_content.list {
     }
 }
 
-tx_solr_search = PAGE
-tx_solr_search {
-    typeNum = {$plugin.tx_solr.search.typeNum}
-    config {
-        disableAllHeaderCode = 1
-        xhtml_cleaning = 0
-        admPanel = 0
-        additionalHeaders.10.header = Content-type: application/json
-        no_cache = 0
-        debug = 0
+initialData {
+    10 {
+        fields {
+            solr = CONTENT
+            solr < lib.search
+            solr {
+                settings {
+                    global = 1
+                }
+            }
+        }
     }
-
-    10 < lib.search
 }
 
-tx_solr_suggest = PAGE
+tx_solr_suggest < lib.headlessPage
 tx_solr_suggest {
     typeNum = {$plugin.tx_solr.suggest.typeNum}
-    config {
-        disableAllHeaderCode = 1
-        xhtml_cleaning = 0
-        admPanel = 0
-        additionalHeaders.10.header = Content-type: application/json
-        no_cache = 0
-        debug = 0
-    }
 
     10 = USER
     10 {

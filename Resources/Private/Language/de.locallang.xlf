@@ -3,6 +3,15 @@
     <file source-language="en" datatype="plaintext" product-name="headless_solr">
         <header/>
         <body>
+            <trans-unit id="flexform.config.sheet_title">
+                <target>Solr</target>
+            </trans-unit>
+            <trans-unit id="flexform.config.search_page">
+                <target>Suchseite</target>
+            </trans-unit>
+            <trans-unit id="pages.palettes.search">
+                <target>Suche</target>
+            </trans-unit>
             <trans-unit id="pages.tx_headless_solr_image">
                 <target>Suchergebnis Bild</target>
             </trans-unit>

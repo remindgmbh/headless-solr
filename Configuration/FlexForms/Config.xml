@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<T3DataStructure>
+    <sheets>
+        <solr>
+            <ROOT>
+                <sheetTitle>LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.sheet_title</sheetTitle>
+                <type>array</type>
+                <el>
+                    <solr.searchPage>
+                        <label>LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.search_page</label>
+                        <config>
+                            <type>group</type>
+                            <allowed>pages</allowed>
+                            <maxitems>1</maxitems>
+                            <size>1</size>
+                        </config>
+                    </solr.searchPage>
+                </el>
+            </ROOT>
+        </solr>
+    </sheets>
+</T3DataStructure>

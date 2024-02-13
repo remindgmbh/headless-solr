@@ -14,6 +14,7 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use FriendsOfTYPO3\Headless\Utility\FileUtility;
 use Psr\Http\Message\ResponseInterface;
 use Remind\Headless\Service\JsonService;
+use Remind\Headless\Utility\ConfigUtility;
 use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
 use TYPO3\CMS\Extbase\Service\ImageService;
 
@@ -42,9 +43,15 @@ class SearchController extends BaseSearchController
     {
         parent::formAction();
 
-        $config = Util::getSolrConfiguration();
-        $targetPageUid = $config->getSearchTargetPage();
-        $getParameter = $config->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
+        $pageConfig = ConfigUtility::getConfig();
+
+        $solrConfig = Util::getSolrConfiguration();
+
+        $targetPageUid = isset($this->settings['global'])
+            ? ((int) ($pageConfig['solr']['searchPage'] ?? 0))
+            : $solrConfig->getSearchTargetPage();
+
+        $getParameter = $solrConfig->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
 
         $arguments = $this->request->getArguments();
 

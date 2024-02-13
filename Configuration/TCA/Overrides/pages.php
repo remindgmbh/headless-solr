@@ -2,6 +2,7 @@
 
 defined('TYPO3') || die;
 
+use Remind\Headless\Utility\ConfigUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 ExtensionManagementUtility::addTCAcolumns(
@@ -15,10 +16,13 @@ ExtensionManagementUtility::addTCAcolumns(
                 'maxitems' => 1,
             ],
         ],
-    ]
+     ]
 );
 
-// Replace no_search and no_search_sub_entries fields with empty palette to remove, they will be added to a new palette below
+/**
+ * Replace no_search and no_search_sub_entries fields with empty palette to remove,
+ * they will be added to a new palette below
+ */
 foreach (['no_search', 'no_search_sub_entries'] as $field) {
     ExtensionManagementUtility::addToAllTCAtypes(
         'pages',
@@ -36,5 +40,7 @@ ExtensionManagementUtility::addFieldsToPalette(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
-    '--palette--;Search;search',
+    '--palette--;LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:pages.palettes.search;search',
 );
+
+ConfigUtility::addFlexForm('FILE:EXT:rmnd_headless_solr/Configuration/FlexForms/Config.xml');
