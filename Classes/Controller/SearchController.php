@@ -11,32 +11,18 @@ use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
-use FriendsOfTYPO3\Headless\Utility\FileUtility;
 use Psr\Http\Message\ResponseInterface;
 use Remind\Headless\Service\JsonService;
 use Remind\Headless\Utility\ConfigUtility;
 use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
-use TYPO3\CMS\Extbase\Service\ImageService;
 
 class SearchController extends BaseSearchController
 {
-    private ?FileUtility $fileUtility = null;
     private ?JsonService $jsonService = null;
-    private ?ImageService $imageService = null;
-
-    public function injectFileUtility(FileUtility $fileUtility): void
-    {
-        $this->fileUtility = $fileUtility;
-    }
 
     public function injectJsonService(JsonService $jsonService): void
     {
         $this->jsonService = $jsonService;
-    }
-
-    public function injectImageService(ImageService $imageService): void
-    {
-        $this->imageService = $imageService;
     }
 
     public function formAction(): ResponseInterface
@@ -114,8 +100,7 @@ class SearchController extends BaseSearchController
             $imageJson = null;
             $imageUid = $searchResult->__get('image_intS') ?? null;
             if ($imageUid) {
-                $imageObj = $this->imageService->getImage(strval($imageUid), null, true);
-                $imageJson = $this->fileUtility->processFile($imageObj);
+                $imageJson = $this->jsonService->processImage($imageUid);
             }
 
             $document = [
