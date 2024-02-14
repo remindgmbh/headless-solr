@@ -130,7 +130,9 @@ class SearchController extends BaseSearchController
             ];
 
             /** @var ModifySearchDocumentEvent $event */
-            $event = $this->eventDispatcher->dispatch(new ModifySearchDocumentEvent($document, $searchResult));
+            $event = $this->eventDispatcher->dispatch(
+                new ModifySearchDocumentEvent($document, $searchResult, $renderingContext)
+            );
 
             $documents[] = $event->getDocument();
         }
