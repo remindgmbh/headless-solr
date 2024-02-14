@@ -1,0 +1,13 @@
+initialData {
+    10 {
+        fields {
+            solr = CONTENT
+            solr =< lib.search
+            solr {
+                settings {
+                    global = 1
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+tx_solr_suggest < lib.headlessPage
+tx_solr_suggest {
+    typeNum = {$plugin.tx_solr.suggest.typeNum}
+
+    10 = USER
+    10 {
+        userFunc = TYPO3\CMS\Extbase\Core\Bootstrap->run
+        extensionName = Solr
+        pluginName = pi_suggest
+        vendorName = ApacheSolrForTypo3
+        controller = Suggest
+        action = suggest
+    }
+}

@@ -1,0 +1,125 @@
+plugin.tx_solr {
+    search {
+        results {
+            resultsHighlighting = 1
+            resultsHighlighting {
+                highlightFields = content
+            }
+        }
+        spellchecking = 1
+    }
+
+    settings {
+        suggest {
+            typeNum = {$plugin.tx_solr.suggest.typeNum}
+        }
+    }
+
+    suggest = 1
+    suggest {
+        numberOfSuggestions = 10
+        suggestField = spell
+    }
+
+    index.queue {
+        pages >
+        pages = 1
+        pages {
+            table = pages
+
+            // allowed page types (doktype) when indexing records from table "pages"
+            allowedPageTypes = 1,4,7
+
+            // Only index standard pages and mount points that are not overlayed.
+            additionalWhereClause = (doktype = 1 OR doktype=4 OR (doktype=7 AND mount_pid_ol=0)) AND no_search = 0
+
+            fields {
+                title = title
+
+                content = SOLR_CONTENT
+                content {
+                    cObject = COA
+                    cObject {
+                        stdWrap.required = 1
+                        stdWrap.wrap = |<br>
+                        10 = CONTENT
+                        10 {
+                            table = tt_content
+                            select {
+                                pidInList.field = uid
+                            }
+                            renderObj = COA
+                            renderObj {
+                                stdWrap.required = 1
+                                stdWrap.wrap = |<br>
+                                10 = TEXT
+                                10 {
+                                    value.field = header
+                                    stdWrap.required = 1
+                                    stdWrap.wrap = |<br>
+                                }
+                                20 = TEXT
+                                20 {
+                                    value.field = subheader
+                                    stdWrap.required = 1
+                                    stdWrap.wrap = |<br>
+                                }
+                                30 = TEXT
+                                30 {
+                                    value.field = bodytext
+                                    stdWrap.required = 1
+                                    stdWrap.wrap = |<br>
+                                }
+                            }
+                        }
+                        20 = CONTENT
+                        20 {
+                            table = tx_headless_item
+                            select {
+                                pidInList.field = uid
+                            }
+                            renderObj = COA
+                            renderObj {
+                                stdWrap.required = 1
+                                stdWrap.wrap = |<br>
+                                10 = TEXT
+                                10 {
+                                    value.field = header
+                                    stdWrap.required = 1
+                                    stdWrap.wrap = |<br>
+                                }
+                                20 = TEXT
+                                20 {
+                                    value.field = subheader
+                                    stdWrap.required = 1
+                                    stdWrap.wrap = |<br>
+                                }
+                                30 = TEXT
+                                30 {
+                                    value.field = bodytext
+                                    stdWrap.required = 1
+                                    stdWrap.wrap = |<br>
+                                }
+                            }
+                        }
+                    }
+                }
+
+                image_intS = SOLR_RELATION
+                image_intS {
+                    localField = tx_headless_solr_image
+                    foreignLabelField = uid
+                }
+
+                url = TEXT
+                url {
+                    typolink.parameter = TEXT
+                    typolink.parameter.field = uid
+                    typolink.useCacheHash = 1
+                    typolink.returnLast = url
+                }
+            }
+
+        }
+    }
+}
