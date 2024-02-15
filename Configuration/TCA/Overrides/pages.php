@@ -2,7 +2,7 @@
 
 defined('TYPO3') || die;
 
-use Remind\Headless\Utility\ConfigUtility;
+use Remind\Headless\Utility\TcaUtility;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
 ExtensionManagementUtility::addTCAcolumns(
@@ -43,4 +43,4 @@ ExtensionManagementUtility::addToAllTCAtypes(
     '--palette--;LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:pages.palettes.search;search',
 );
 
-ConfigUtility::addFlexForm('FILE:EXT:rmnd_headless_solr/Configuration/FlexForms/Config.xml');
+TcaUtility::addPageConfigFlexForm('FILE:EXT:rmnd_headless_solr/Configuration/FlexForms/Config.xml');

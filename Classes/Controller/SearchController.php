@@ -29,7 +29,7 @@ class SearchController extends BaseSearchController
     {
         parent::formAction();
 
-        $pageConfig = ConfigUtility::getConfig();
+        $pageConfig = ConfigUtility::getRootPageConfig();
 
         $solrConfig = Util::getSolrConfiguration();
 
