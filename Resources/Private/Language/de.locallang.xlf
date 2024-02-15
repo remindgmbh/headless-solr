@@ -9,6 +9,9 @@
             <trans-unit id="flexform.config.search_page">
                 <target>Suchseite</target>
             </trans-unit>
+            <trans-unit id="flexform.config.search_page.description">
+                <target>Wird für globale Suche benutzt</target>
+            </trans-unit>
             <trans-unit id="pages.palettes.search">
                 <target>Suche</target>
             </trans-unit>

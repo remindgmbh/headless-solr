@@ -3,11 +3,15 @@
     <sheets>
         <solr>
             <ROOT>
-                <sheetTitle>LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.sheet_title</sheetTitle>
+                <sheetTitle>
+                    LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.sheet_title</sheetTitle>
                 <type>array</type>
                 <el>
                     <solr.searchPage>
-                        <label>LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.search_page</label>
+                        <label>
+                            LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.search_page</label>
+                        <description>
+                            LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:flexform.config.search_page.description</description>
                         <config>
                             <type>group</type>
                             <allowed>pages</allowed>
