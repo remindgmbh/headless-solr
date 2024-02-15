@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Remind\HeadlessSolr\Event;
 
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
-use TYPO3\CMS\Fluid\Core\Rendering\RenderingContext;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
 class ModifySearchDocumentEvent
 {
     public function __construct(
         private array $document,
         private readonly SearchResult $searchResult,
-        private readonly RenderingContext $renderingContext,
+        private readonly RenderingContextInterface $renderingContext,
     ) {
     }
 
@@ -33,7 +33,7 @@ class ModifySearchDocumentEvent
         return $this;
     }
 
-    public function getRenderingContext(): RenderingContext
+    public function getRenderingContext(): RenderingContextInterface
     {
         return $this->renderingContext;
     }
