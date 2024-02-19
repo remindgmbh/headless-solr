@@ -1,5 +1,9 @@
 plugin.tx_solr {
     search {
+        faceting {
+            keepAllFacetsOnSelection = 1
+            countAllFacetsForSelection = 1
+        }
         results {
             resultsHighlighting = 1
             resultsHighlighting {
