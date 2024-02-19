@@ -6,7 +6,7 @@ namespace Remind\HeadlessSolr\Controller;
 
 use ApacheSolrForTypo3\Solr\Controller\SearchController as BaseSearchController;
 use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Facets\OptionBased\AbstractOptionsFacet;
-use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Spellchecking\Suggestion;
+use ApacheSolrForTypo3\Solr\System\Configuration\TypoScriptConfiguration;
 use ApacheSolrForTypo3\Solr\Util;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
@@ -20,6 +20,12 @@ class SearchController extends BaseSearchController
 {
     private ?JsonService $jsonService = null;
 
+    private ?TypoScriptConfiguration $solrConfig = null;
+
+    private ?string $getParameter = null;
+
+    private ?string $pluginNamespace = null;
+
     public function injectJsonService(JsonService $jsonService): void
     {
         $this->jsonService = $jsonService;
@@ -31,15 +37,9 @@ class SearchController extends BaseSearchController
 
         $pageConfig = ConfigUtility::getRootPageConfig();
 
-        $solrConfig = Util::getSolrConfiguration();
-
         $targetPageUid = isset($this->settings['global'])
             ? ((int) ($pageConfig['solr']['searchPage'] ?? 0))
-            : $solrConfig->getSearchTargetPage();
-
-        $getParameter = $solrConfig->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
-
-        $pluginNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+            : $this->solrConfig->getSearchTargetPage();
 
         $searchUrl = $this->uriBuilder
             ->reset()
@@ -49,7 +49,7 @@ class SearchController extends BaseSearchController
         $searchUrlWithQueryParam = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($targetPageUid)
-            ->setArguments([$pluginNamespace . '[' . $getParameter . ']' => '*'])
+            ->setArguments($this->getSearchArguments('*'))
             ->build();
 
         $queryParam = str_replace('=*', '', str_replace($searchUrl . '?', '', urldecode($searchUrlWithQueryParam)));
@@ -67,7 +67,7 @@ class SearchController extends BaseSearchController
             ],
             'suggest' => [
                 'url' => $suggestUrl,
-                'queryParam' => $pluginNamespace . '[queryString]',
+                'queryParam' => $this->pluginNamespace . '[queryString]',
             ],
         ];
 
@@ -169,17 +169,38 @@ class SearchController extends BaseSearchController
             ];
         }
 
+        $spellCheckingSuggestion = current($searchResultSet->getSpellCheckingSuggestions());
+
         $result = [
             'query' => $query,
             'count' => $count,
             'pagination' => $paginationResult,
             'facets' => $facets,
             'documents' => $documents,
-            'spellchecking' => array_values(array_map(function (Suggestion $suggestion) {
-                return $suggestion->getSuggestion();
-            }, $searchResultSet->getSpellCheckingSuggestions())),
+            'spellCheckingSuggestion' => $spellCheckingSuggestion
+                ? [
+                    'label' => $spellCheckingSuggestion->getSuggestion(),
+                    'link' => $this->uriBuilder
+                        ->reset()
+                        ->setArguments($this->getSearchArguments($spellCheckingSuggestion->getSuggestion()))
+                        ->build(),
+                ]
+                : null,
         ];
 
         return $this->jsonResponse(json_encode($result));
+    }
+
+    protected function initializeAction(): void
+    {
+        parent::initializeAction();
+        $this->solrConfig = Util::getSolrConfiguration();
+        $this->getParameter = $this->solrConfig->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
+        $this->pluginNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+    }
+
+    private function getSearchArguments(string $term): array
+    {
+        return [$this->pluginNamespace . '[' . $this->getParameter . ']' => $term];
     }
 }
