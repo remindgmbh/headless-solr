@@ -110,6 +110,7 @@ class SearchController extends BaseSearchController
                 ),
                 'image' => $imageJson,
                 'link' => $searchResult->getUrl(),
+                'type' => $searchResult->getType(),
             ];
 
             /** @var ModifySearchDocumentEvent $event */
