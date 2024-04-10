@@ -14,6 +14,9 @@ ExtensionManagementUtility::addTCAcolumns(
                 'type' => 'file',
                 'allowed' => 'common-image-types',
                 'maxitems' => 1,
+                'behaviour' => [
+                    'allowLanguageSynchronization' => true,
+                ],
             ],
         ],
      ]
