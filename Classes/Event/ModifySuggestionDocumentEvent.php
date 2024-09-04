@@ -8,6 +8,9 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\Result\SearchResult;
 
 class ModifySuggestionDocumentEvent
 {
+    /**
+     * @param mixed[] $document
+     */
     public function __construct(
         private array $document,
         private readonly SearchResult $searchResult,
@@ -19,11 +22,17 @@ class ModifySuggestionDocumentEvent
         return $this->searchResult;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getDocument(): array
     {
         return $this->document;
     }
 
+    /**
+     * @param mixed[] $document
+     */
     public function setDocument(array $document): self
     {
         $this->document = $document;

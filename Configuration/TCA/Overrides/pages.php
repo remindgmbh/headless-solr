@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 defined('TYPO3') || die;
 
 use Remind\Headless\Utility\TcaUtility;
@@ -9,15 +11,15 @@ ExtensionManagementUtility::addTCAcolumns(
     'pages',
     [
         'tx_headless_solr_image' => [
-            'label' => 'LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:pages.tx_headless_solr_image',
             'config' => [
-                'type' => 'file',
                 'allowed' => 'common-image-types',
-                'maxitems' => 1,
                 'behaviour' => [
                     'allowLanguageSynchronization' => true,
                 ],
+                'maxitems' => 1,
+                'type' => 'file',
             ],
+            'label' => 'LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:pages.tx_headless_solr_image',
         ],
      ]
 );

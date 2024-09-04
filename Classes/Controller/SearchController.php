@@ -38,8 +38,8 @@ class SearchController extends BaseSearchController
         $pageConfig = ConfigUtility::getRootPageConfig();
 
         $targetPageUid = isset($this->settings['global'])
-            ? ((int) ($pageConfig['solr']['searchPage'] ?? 0))
-            : $this->solrConfig->getSearchTargetPage();
+            ? (int) ($pageConfig['solr']['searchPage'] ?? 0)
+            : $this->solrConfig?->getSearchTargetPage() ?? 0;
 
         $searchUrl = $this->uriBuilder
             ->reset()
@@ -62,16 +62,16 @@ class SearchController extends BaseSearchController
 
         $result = [
             'search' => [
-                'url' => $searchUrl,
                 'queryParam' => $queryParam,
+                'url' => $searchUrl,
             ],
             'suggest' => [
-                'url' => $suggestUrl,
                 'queryParam' => $this->pluginNamespace . '[queryString]',
+                'url' => $suggestUrl,
             ],
         ];
 
-        return $this->jsonResponse(json_encode($result));
+        return $this->jsonResponse(json_encode($result) ?: null);
     }
 
     public function resultsAction(): ResponseInterface
@@ -98,11 +98,10 @@ class SearchController extends BaseSearchController
             $imageJson = null;
             $imageUid = $searchResult->__get('image_intS') ?? null;
             if ($imageUid) {
-                $imageJson = $this->jsonService->processImage($imageUid);
+                $imageJson = $this->jsonService?->processImage($imageUid);
             }
 
             $document = [
-                'title' => $searchResult->getTitle(),
                 'content' => $viewHelperInvoker->invoke(
                     HighlightResultViewHelper::class,
                     ['resultSet' => $searchResultSet, 'document' => $searchResult, 'fieldName' => 'content'],
@@ -110,6 +109,7 @@ class SearchController extends BaseSearchController
                 ),
                 'image' => $imageJson,
                 'link' => $searchResult->getUrl(),
+                'title' => $searchResult->getTitle(),
                 'type' => $searchResult->getType(),
             ];
 
@@ -121,7 +121,7 @@ class SearchController extends BaseSearchController
             $documents[] = $event->getDocument();
         }
 
-        $paginationResult = $this->jsonService->serializePagination($pagination, 'page', $currentPage);
+        $paginationResult = $this->jsonService?->serializePagination($pagination, 'page', $currentPage);
 
         $count = $searchResultSet->getAllResultCount();
 
@@ -143,11 +143,11 @@ class SearchController extends BaseSearchController
                     );
 
                     $options[] = [
-                        'value' => $option->getValue(),
+                        'active' => $option->getSelected(),
+                        'count' => $option->getDocumentCount(),
                         'label' => $option->getLabel(),
                         'link' => $link,
-                        'count' => $option->getDocumentCount(),
-                        'active' => $option->getSelected(),
+                        'value' => $option->getValue(),
                     ];
                 }
             }
@@ -158,14 +158,14 @@ class SearchController extends BaseSearchController
             }, 0);
 
             $facets[] = [
-                'field' => $facet->getField(),
-                'name' => $facet->getName(),
-                'label' => $facet->getLabel(),
                 'allOptions' => [
-                    'link' => $allOptionsLink,
-                    'count' => $allOptionsCount,
                     'active' => !$facet->getIsUsed(),
+                    'count' => $allOptionsCount,
+                    'link' => $allOptionsLink,
                 ],
+                'field' => $facet->getField(),
+                'label' => $facet->getLabel(),
+                'name' => $facet->getName(),
                 'options' => $options,
             ];
         }
@@ -173,11 +173,11 @@ class SearchController extends BaseSearchController
         $spellCheckingSuggestion = current($searchResultSet->getSpellCheckingSuggestions());
 
         $result = [
-            'query' => $query,
             'count' => $count,
-            'pagination' => $paginationResult,
-            'facets' => $facets,
             'documents' => $documents,
+            'facets' => $facets,
+            'pagination' => $paginationResult,
+            'query' => $query,
             'spellCheckingSuggestion' => $spellCheckingSuggestion
                 ? [
                     'label' => $spellCheckingSuggestion->getSuggestion(),
@@ -189,17 +189,23 @@ class SearchController extends BaseSearchController
                 : null,
         ];
 
-        return $this->jsonResponse(json_encode($result));
+        return $this->jsonResponse(json_encode($result) ?: null);
     }
 
     protected function initializeAction(): void
     {
         parent::initializeAction();
         $this->solrConfig = Util::getSolrConfiguration();
-        $this->getParameter = $this->solrConfig->getValueByPathOrDefaultValue('plugin.tx_solr.search.query.getParameter', 'q');
-        $this->pluginNamespace = $this->typoScriptConfiguration->getSearchPluginNamespace();
+        $this->getParameter = $this->solrConfig->getValueByPathOrDefaultValue(
+            'plugin.tx_solr.search.query.getParameter',
+            'q'
+        );
+        $this->pluginNamespace = $this->typoScriptConfiguration?->getSearchPluginNamespace();
     }
 
+    /**
+     * @return string[]
+     */
     private function getSearchArguments(string $term): array
     {
         return [$this->pluginNamespace . '[' . $this->getParameter . ']' => $term];

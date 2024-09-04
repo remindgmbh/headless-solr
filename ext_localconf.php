@@ -9,7 +9,7 @@ use Remind\HeadlessSolr\Domain\Search\Suggest\SuggestService as HeadlessSuggestS
 
 defined('TYPO3') || die('Access denied.');
 
-(function () {
+(function (): void {
     $GLOBALS['TYPO3_CONF_VARS']['SYS']['Objects'][SearchController::class] = [
         'className' => HeadlessSearchController::class,
     ];
@@ -18,10 +18,5 @@ defined('TYPO3') || die('Access denied.');
         'className' => HeadlessSuggestService::class,
     ];
 
-    $GLOBALS
-        ['TYPO3_CONF_VARS']
-        ['SYS']
-        ['locallangXMLOverride']
-        ['EXT:solr/Resources/Private/Language/locallang.xlf']
-        [] = 'EXT:rmnd_headless_solr/Resources/Private/Language/Overrides/locallang.xlf';
+    $GLOBALS['TYPO3_CONF_VARS']['SYS']['locallangXMLOverride']['EXT:solr/Resources/Private/Language/locallang.xlf'][] = 'EXT:rmnd_headless_solr/Resources/Private/Language/Overrides/locallang.xlf';
 })();

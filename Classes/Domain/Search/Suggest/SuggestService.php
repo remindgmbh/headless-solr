@@ -12,6 +12,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 class SuggestService extends BaseSuggestService
 {
+    /**
+     * @param mixed[] $additionalTopResultsFields
+     * @return mixed[]
+     */
     protected function getDocumentAsArray(SearchResult $document, array $additionalTopResultsFields = []): array
     {
         $fields = parent::getDocumentAsArray($document, $additionalTopResultsFields);

@@ -12,13 +12,16 @@ use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class UserFunc
 {
-    private $cObj;
+    private ContentObjectRenderer $cObj;
 
     public function setContentObjectRenderer(ContentObjectRenderer $cObj): void
     {
         $this->cObj = $cObj;
     }
 
+    /**
+     * @param mixed[] $conf
+     */
     public function getFlexFormValues(string $content, array $conf): ?string
     {
         $type = $this->cObj->data['CType'];
