@@ -2565,12 +2565,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/remindgmbh/headless.git",
-                "reference": "ff443b4455a52a466faa7995d2139bc6d9272c24"
+                "reference": "9233f2dc6d8cbc7d2a63c5420f7bb52851b3b261"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/remindgmbh/headless/zipball/ff443b4455a52a466faa7995d2139bc6d9272c24",
-                "reference": "ff443b4455a52a466faa7995d2139bc6d9272c24",
+                "url": "https://api.github.com/repos/remindgmbh/headless/zipball/9233f2dc6d8cbc7d2a63c5420f7bb52851b3b261",
+                "reference": "9233f2dc6d8cbc7d2a63c5420f7bb52851b3b261",
                 "shasum": ""
             },
             "require": {
@@ -2619,7 +2619,7 @@
                 "issues": "https://github.com/remindgmbh/headless/issues",
                 "source": "https://github.com/remindgmbh/headless/tree/develop"
             },
-            "time": "2024-09-04T06:47:13+00:00"
+            "time": "2024-09-04T12:57:34+00:00"
         },
         {
             "name": "solarium/solarium",

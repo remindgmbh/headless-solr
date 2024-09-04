@@ -12,6 +12,7 @@ use ApacheSolrForTypo3\Solr\ViewHelpers\Document\HighlightResultViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\RemoveAllFacetsViewHelper;
 use ApacheSolrForTypo3\Solr\ViewHelpers\Uri\Facet\SetFacetItemViewHelper;
 use Psr\Http\Message\ResponseInterface;
+use Remind\Headless\Service\FilesService;
 use Remind\Headless\Service\JsonService;
 use Remind\Headless\Utility\ConfigUtility;
 use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
@@ -19,6 +20,8 @@ use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
 class SearchController extends BaseSearchController
 {
     private ?JsonService $jsonService = null;
+
+    private ?FilesService $fileService = null;
 
     private ?TypoScriptConfiguration $solrConfig = null;
 
@@ -29,6 +32,11 @@ class SearchController extends BaseSearchController
     public function injectJsonService(JsonService $jsonService): void
     {
         $this->jsonService = $jsonService;
+    }
+
+    public function injectFileService(FilesService $filesService): void
+    {
+        $this->fileService = $filesService;
     }
 
     public function formAction(): ResponseInterface
@@ -98,7 +106,7 @@ class SearchController extends BaseSearchController
             $imageJson = null;
             $imageUid = $searchResult->__get('image_intS') ?? null;
             if ($imageUid) {
-                $imageJson = $this->jsonService?->processImage($imageUid);
+                $imageJson = $this->fileService?->processImage($imageUid);
             }
 
             $document = [
