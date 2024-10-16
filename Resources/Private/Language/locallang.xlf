@@ -12,7 +12,7 @@
             <trans-unit id="flexform.config.search_page.description">
                 <source>Used for global search</source>
             </trans-unit>
-            <trans-unit id="pages.palettes.search">
+            <trans-unit id="pages.search">
                 <source>Search</source>
             </trans-unit>
             <trans-unit id="pages.tx_headless_solr_image">

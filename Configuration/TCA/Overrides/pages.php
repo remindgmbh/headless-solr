@@ -45,7 +45,7 @@ ExtensionManagementUtility::addFieldsToPalette(
 
 ExtensionManagementUtility::addToAllTCAtypes(
     'pages',
-    '--palette--;LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:pages.palettes.search;search',
+    '--div--;LLL:EXT:rmnd_headless_solr/Resources/Private/Language/locallang.xlf:pages.search,--palette--;;search',
 );
 
 TcaUtility::addPageConfigFlexForm('FILE:EXT:rmnd_headless_solr/Configuration/FlexForms/Config.xml');
