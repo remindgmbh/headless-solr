@@ -16,6 +16,7 @@ use Remind\Headless\Service\FilesService;
 use Remind\Headless\Service\JsonService;
 use Remind\Headless\Utility\ConfigUtility;
 use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
+use Remind\HeadlessSolr\Event\ModifySearchResultSetEvent;
 
 class SearchController extends BaseSearchController
 {
@@ -65,7 +66,7 @@ class SearchController extends BaseSearchController
         $suggestUrl = $this->uriBuilder
             ->reset()
             ->setTargetPageUid($targetPageUid)
-            ->setTargetPageType((int)$this->settings['suggest']['typeNum'])
+            ->setTargetPageType((int) $this->settings['suggest']['typeNum'])
             ->build();
 
         $result = [
@@ -196,6 +197,12 @@ class SearchController extends BaseSearchController
                 ]
                 : null,
         ];
+
+        /** @var ModifySearchResultSetEvent $event */
+        $searchResultSetEvent = $this->eventDispatcher->dispatch(
+            new ModifySearchResultSetEvent($searchResultSet, $result)
+        );
+        $result = $searchResultSetEvent->getValues();
 
         return $this->jsonResponse(json_encode($result) ?: null);
     }
