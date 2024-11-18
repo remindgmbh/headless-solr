@@ -9,8 +9,7 @@ use ApacheSolrForTypo3\Solr\Domain\Search\ResultSet\SearchResultSet;
 class ModifySearchResultSetEvent
 {
     /**
-     * @param SearchResultSet $searchResultSet
-     * @param array $values
+     * @param mixed[] $values
      */
     public function __construct(
         private readonly SearchResultSet $searchResultSet,
@@ -18,16 +17,13 @@ class ModifySearchResultSetEvent
     ) {
     }
 
-    /**
-     * @return SearchResultSet
-     */
     public function getSearchResultSet(): SearchResultSet
     {
         return $this->searchResultSet;
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
     public function getValues(): array
     {
@@ -35,8 +31,7 @@ class ModifySearchResultSetEvent
     }
 
     /**
-     * @param array $values
-     * @return ModifySearchResultSetEvent
+     * @param mixed[] $values
      */
     public function setValues(array $values): self
     {
