@@ -61,7 +61,11 @@ class SearchController extends BaseSearchController
             ->setArguments($this->getSearchArguments('*'))
             ->build();
 
-        $queryParam = str_replace('=*', '', str_replace($searchUrl . '?', '', urldecode($searchUrlWithQueryParam)));
+        $queryParam = str_replace(
+            '=*',
+            '',
+            str_replace(rawurldecode($searchUrl) . '?', '', rawurldecode($searchUrlWithQueryParam))
+        );
 
         $suggestUrl = $this->uriBuilder
             ->reset()
