@@ -44,10 +44,10 @@
         }
     },
     "require": {
-        "apache-solr-for-typo3/solr": "^12",
-        "php": "^8.2",
-        "remind/headless": "^4.0 | dev-develop",
-        "typo3/cms-core": "^12.4"
+        "apache-solr-for-typo3/solr": "^13",
+        "php": "^8",
+        "remind/headless": "^6.0 | dev-develop | 13.x-dev",
+        "typo3/cms-core": "^13.4"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^1.0",

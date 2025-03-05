@@ -148,7 +148,12 @@ class SearchController extends BaseSearchController
             $documents[] = $event->getDocument();
         }
 
-        $paginationResult = $this->jsonService?->serializePagination($pagination, 'page', $currentPage);
+        $paginationResult = $this->jsonService?->serializePagination(
+            $this->uriBuilder,
+            $pagination,
+            'page',
+            $currentPage
+        );
 
         $count = $searchResultSet->getAllResultCount();
 
