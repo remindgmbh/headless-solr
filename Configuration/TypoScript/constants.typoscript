@@ -4,4 +4,8 @@ plugin.tx_solr {
     suggest {
         typeNum = 7384
     }
+
+    view {
+        templateRootPath = EXT:rmnd_headless_solr/Resources/Private/Templates/
+    }
 }
