@@ -17,6 +17,8 @@ use Remind\Headless\Service\JsonService;
 use Remind\Headless\Utility\ConfigUtility;
 use Remind\HeadlessSolr\Event\ModifySearchDocumentEvent;
 use Remind\HeadlessSolr\Event\ModifySearchResultSetEvent;
+use TYPO3\CMS\Core\Service\FlexFormService;
+use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 class SearchController extends BaseSearchController
 {
@@ -24,7 +26,11 @@ class SearchController extends BaseSearchController
 
     private ?FilesService $fileService = null;
 
+    private ?FlexFormService $flexFormService = null;
+
     private ?TypoScriptConfiguration $solrConfig = null;
+
+    private ?ContentObjectRenderer $contentObject = null;
 
     private ?string $getParameter = null;
 
@@ -38,6 +44,11 @@ class SearchController extends BaseSearchController
     public function injectFileService(FilesService $filesService): void
     {
         $this->fileService = $filesService;
+    }
+
+    public function injectFlexFormService(FlexFormService $flexFormService): void
+    {
+        $this->flexFormService = $flexFormService;
     }
 
     public function formAction(): ResponseInterface
@@ -73,7 +84,10 @@ class SearchController extends BaseSearchController
             ->setTargetPageType((int) $this->settings['suggest']['typeNum'])
             ->build();
 
+        $placeholderText = $this->getPlaceholderTextFromFlexFormSettings();
+
         $result = [
+            ...(!empty($placeholderText) ? ['placeholderText' => $placeholderText] : []),
             'search' => [
                 'queryParam' => $queryParam,
                 'url' => $searchUrl,
@@ -185,6 +199,8 @@ class SearchController extends BaseSearchController
 
         $spellCheckingSuggestion = current($searchResultSet->getSpellCheckingSuggestions());
 
+        $noResultsText = $this->getNoResultsTextFromFlexFormSettings();
+
         $result = [
             'count' => $count,
             'documents' => $documents,
@@ -200,6 +216,7 @@ class SearchController extends BaseSearchController
                         ->build(),
                 ]
                 : null,
+            ...(!empty($noResultsText) ? ['noResultsText' => $noResultsText] : []),
         ];
 
         /** @var ModifySearchResultSetEvent $event */
@@ -220,6 +237,38 @@ class SearchController extends BaseSearchController
             'q'
         );
         $this->pluginNamespace = $this->typoScriptConfiguration?->getSearchPluginNamespace();
+        $this->contentObject = $this->getContentObjectRenderer();
+    }
+
+    /**
+     * @return array<mixed>|null
+     */
+    protected function getFlexFormArray(): ?array
+    {
+        $contentObjectData = $this->contentObject?->data;
+        return $this->flexFormService?->convertFlexFormContentToArray($contentObjectData['pi_flexform'] ?? '');
+    }
+
+    protected function getPlaceholderTextFromFlexFormSettings(): ?string
+    {
+        $flexformArray = $this->getFlexFormArray();
+        if (
+            isset($flexformArray['search']) &&
+            is_array($flexformArray['search'])
+        ) {
+            return $flexformArray['search']['placeholderText'] ?? null;
+        }
+        return null;
+    }
+
+    protected function getNoResultsTextFromFlexFormSettings(): ?string
+    {
+        $flexformArray = $this->getFlexFormArray();
+        $noResultsTextRaw = $flexformArray['search']['noResultsText'] ?? null;
+        if ($noResultsTextRaw) {
+            return $this->contentObject?->parseFunc($noResultsTextRaw, null, '< lib.parseFunc_links');
+        }
+        return null;
     }
 
     /**

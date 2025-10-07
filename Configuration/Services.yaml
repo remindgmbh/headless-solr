@@ -10,3 +10,9 @@ services:
   ApacheSolrForTypo3\Solr\Controller\SearchController:
     alias: Remind\HeadlessSolr\Controller\SearchController
     public: true
+
+  Remind\HeadlessSolr\Event\Listener\ExtendPluginFlexforms:
+    tags:
+      - name: event.listener
+        identifier: 'headless-solr/extend-plugin-flexforms'
+        event: TYPO3\CMS\Core\Configuration\Event\AfterFlexFormDataStructureParsedEvent

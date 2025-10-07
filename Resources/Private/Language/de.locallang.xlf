@@ -18,6 +18,12 @@
             <trans-unit id="pages.tx_headless_solr_image">
                 <target>Suchergebnis Bild</target>
             </trans-unit>
+            <trans-unit id="solr_pi_results.no_results_text">
+                <target>Keine Ergebnisse Text</target>
+            </trans-unit>
+            <trans-unit id="solr_pi_search.placeholder_text">
+                <target>Placeholder Text</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
