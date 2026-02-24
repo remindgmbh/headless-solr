@@ -46,7 +46,7 @@
     "require": {
         "apache-solr-for-typo3/solr": "^13",
         "php": "^8",
-        "remind/headless": "^6.0 | dev-develop | 13.x-dev",
+        "remind/headless": "^5.0 | dev-develop",
         "typo3/cms-core": "^13.4"
     },
     "require-dev": {
